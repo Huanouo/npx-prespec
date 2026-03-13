@@ -1,109 +1,88 @@
-# Implementation Plan: [FEATURE]
+# 實作計畫：第三人稱賽車遊戲
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**分支**: `001-third-person-racing-game` | **日期**: 2026-03-13 | **規格**: [spec.md](./spec.md)
+**輸入**: `/specs/001-third-person-racing-game/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
+## 摘要
 
-## Summary
+建立可部署於 GitHub Pages 的純前端 3D 第三人稱賽車遊戲。使用 Three.js 渲染 3D 場景，玩家從賽車後方視角駕駛、完成計圈，並追求最佳單圈時間。技術方案採最小可執行實作（無框架、無後端、無建置工具依賴），以單一 HTML 入口點搭配原生 ES 模組提供。
 
-[Extract from feature spec: primary requirement + technical approach from research]
+## 技術背景
 
-## Technical Context
-
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**語言／版本**: HTML5 + JavaScript (ES2020)  
+**主要依賴**: Three.js r161（CDN 載入，零建置步驟）  
+**儲存**: N/A（無持久化；最佳圈速僅存於記憶體）  
+**測試**: Vitest（單元測試邏輯層）  
+**目標平台**: 現代桌面瀏覽器（Chrome 90+、Firefox 88+、Edge 90+）；GitHub Pages 靜態托管  
+**專案類型**: web-app（靜態前端，可部署至 GitHub Pages）  
+**效能目標**: 60 FPS（桌面 GPU）、首次載入 < 3 秒（含 CDN Three.js）  
+**限制**: 純靜態，無後端；不含音效；不含行動裝置支援  
+**規模**: 單人遊戲；MVP 階段 1 條賽道、1 輛賽車
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+*關卡：Phase 0 研究前必須通過。Phase 1 設計後重新確認。*
 
-- 語言一致性：本次計畫與衍生文件 MUST 使用繁體中文。
-- 精簡設計：技術方案 MUST 以最小可執行實作為優先，避免未證實需求的提前抽象。
-- Git 可追溯：進入與離開本階段前 MUST 可執行 `git status` 並確認狀態可讀。
-- TDD 預設：實作策略 MUST 明確採用 Red -> Green -> Refactor。
-- 規格保護：後續 implement 套版或補檔流程 MUST 不刪除、不覆蓋既有 `spec.md`、`plan.md`、`tasks.md`。
-- 網站預設：若為網站專案，預設 MUST 為可部署 GitHub Pages 的前端靜態網站。
+| 原則 | 狀態 | 說明 |
+|------|------|------|
+| 語言一致性 | ✅ 通過 | 本計畫及所有衍生文件均使用繁體中文 |
+| 精簡設計 | ✅ 通過 | 採最小可執行方案：零建置工具、CDN 載入 Three.js、單一 HTML 入口 |
+| Git 可追溯 | ✅ 通過 | 每個階段前後可執行 `git status` 確認狀態 |
+| TDD 預設 | ✅ 通過 | 邏輯層（物理計算、圈數判斷）採 Red→Green→Refactor；3D 渲染層以瀏覽器截圖驗收 |
+| 規格保護 | ✅ 通過 | implement 階段不覆寫 spec.md、plan.md、tasks.md |
+| 網站預設 | ✅ 通過 | 輸出為 `docs/` 靜態資產，可直接部署至 GitHub Pages |
 
-## Project Structure
+## 專案結構
 
-### Documentation (this feature)
+### 文件（本功能）
 
 ```text
-specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+specs/001-third-person-racing-game/
+├── plan.md              # 本檔案（/speckit.plan 輸出）
+├── spec.md              # 功能規格
+├── research.md          # Phase 0 輸出（/speckit.plan 指令）
+├── data-model.md        # Phase 1 輸出（/speckit.plan 指令）
+├── quickstart.md        # Phase 1 輸出（/speckit.plan 指令）
+├── contracts/           # Phase 1 輸出（/speckit.plan 指令）
+└── tasks.md             # Phase 2 輸出（/speckit.tasks 指令）
 ```
 
-### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
+### 原始碼（倉庫根目錄）
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+docs/                    # GitHub Pages 靜態輸出根目錄
+├── index.html           # 遊戲入口（唯一 HTML 檔案）
+├── src/
+│   ├── main.js          # 遊戲主迴圈與初始化
+│   ├── car.js           # 賽車物理與渲染實體
+│   ├── track.js         # 賽道幾何與碰撞邊界
+│   ├── camera.js        # 第三人稱相機控制器
+│   ├── hud.js           # HUD 覆蓋層（速度、圈數、計時）
+│   ├── lap-tracker.js   # 計圈邏輯與最佳圈速記錄
+│   └── input.js         # 鍵盤輸入處理
+└── assets/              # 材質與模型（MVP 使用程序式幾何）
 
 tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+├── unit/
+│   ├── lap-tracker.test.js   # 計圈邏輯單元測試
+│   ├── car.test.js           # 賽車物理計算單元測試
+│   └── input.test.js         # 輸入映射單元測試
+└── vitest.config.js
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**結構決策**: 採 Option 2 變體（靜態 Web App）。`docs/` 為 GitHub Pages 輸出根目錄；`src/` 放遊戲邏輯 ES 模組；`tests/` 放 Vitest 單元測試（僅涵蓋純邏輯層，不涵蓋 Three.js 渲染）。
 
-## Complexity Tracking
+## 複雜度追蹤
 
-> **Fill ONLY if Constitution Check has violations that must be justified**
+> 無 Constitution Check 違規，毋須填寫。
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+## Phase 1 設計後 Constitution Check 重新確認
+
+| 原則 | 狀態 | 設計後驗證說明 |
+|------|------|--------------|
+| 語言一致性 | ✅ 通過 | spec.md、research.md、data-model.md、contracts/ui-contract.md、quickstart.md 全部使用繁體中文 |
+| 精簡設計 | ✅ 通過 | 無多餘抽象：7 個模組各司其職，無 Repository/Service/Factory 等未證實抽象 |
+| Git 可追溯 | ✅ 通過 | `git status` 確認所有新增檔案均列於 untracked，可追溯 |
+| TDD 預設 | ✅ 通過 | data-model.md 已標明驗證規則；tests/ 結構已定義；contracts 已指定可測 API |
+| 規格保護 | ✅ 通過 | tasks.md 尚未建立，implement 階段建立後不得覆蓋 spec.md / plan.md |
+| 網站預設 | ✅ 通過 | docs/ 結構已在 data-model.md 與 quickstart.md 中明確定義，符合 GitHub Pages 要求 |
