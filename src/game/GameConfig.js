@@ -1,0 +1,12 @@
+export const SPEED_SCALE = 10;
+export const FRICTION_COEFF = 0.003;
+export const RESET_DELAY_SEC = 3;
+export const COUNTDOWN_START = 3;
+export const PHYSICS_STEP = 1 / 60;
+export const CAMERA_OFFSET = { x: 0, y: 3, z: -8 };
+export const CAMERA_LERP_FACTOR = 0.1;
+export const GRAVITY = -9.82;
+export const AMBIENT_LIGHT_INTENSITY = 0.6;
+export const DIRECTIONAL_LIGHT_INTENSITY = 0.8;
+export const SKY_COLOR = 0x87ceeb;
+export const GROUND_COLOR = 0x4a7c59;
