@@ -61,6 +61,14 @@ describe('Track', () => {
     expect(result.isFinishLine).toBe(true);
   });
 
+  it('checkCheckpoint() 起跑時站在起終點線上不應立即觸發完圈（lastCheckpoint=0）', () => {
+    // 賽局初始時 lastCheckpoint 設為 0，代表車子剛出發，下一個應觸發的是 checkpoint 1
+    const progress = { lastCheckpoint: 0 };
+    const finishLine = config.checkpoints[0];
+    const result = track.checkCheckpoint(finishLine.position, progress);
+    expect(result.triggered).toBe(false);
+  });
+
   it('getNearestResetPosition() 返回帶有 position 和 rotation 的物件', () => {
     const result = track.getNearestResetPosition({ x: 5, y: 0, z: 5 });
     expect(result).toHaveProperty('position');
