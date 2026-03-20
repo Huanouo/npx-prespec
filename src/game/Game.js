@@ -36,7 +36,7 @@ export class Game {
     this._track = null;
     this._carMesh = null;
     this._trackMesh = null;
-    this._lapProgress = { lastCheckpoint: -1 };
+    this._lapProgress = { lastCheckpoint: 0 };
     this._resetTimer = 0;
     this._collision = null;
     this._audio = new AudioManager();
@@ -136,7 +136,7 @@ export class Game {
 
     this._car = carEntity;
     this._track = trackEntity;
-    this._lapProgress = { lastCheckpoint: -1 };
+    this._lapProgress = { lastCheckpoint: 0 };
     this._resetTimer = 0;
     this._collision = new Collision(carEntity, trackEntity, () => {
       this._audio.playCrash();
@@ -251,8 +251,7 @@ export class Game {
 
     // Checkpoint / lap tracking
     const cpResult = this._track.checkCheckpoint(this._car.position, this._lapProgress);
-    if (cpResult.triggered && cpResult.isFinishLine && this._car.lapCount > 0 ||
-        cpResult.triggered && cpResult.isFinishLine && this._lapProgress.lastCheckpoint === 0) {
+    if (cpResult.triggered && cpResult.isFinishLine) {
       this._audio.playLapComplete();
       this._car.completeLap(this._lapTimer.elapsedMs);
       this._lapTimer.reset();
@@ -262,7 +261,7 @@ export class Game {
         this._finishRace();
         return;
       }
-      this._lapProgress.lastCheckpoint = -1;
+      this._lapProgress.lastCheckpoint = 0;
     }
 
     // Timers
